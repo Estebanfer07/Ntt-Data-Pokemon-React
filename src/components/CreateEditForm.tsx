@@ -47,9 +47,9 @@ export const CreateEditForm = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (invalidForm) return;
-
-    if (id) {
+    if (invalidForm) {
+      return;
+    } else if (id) {
       dispatch(startEdittingPokemon(id, pokemonValues));
     } else {
       dispatch(startCreatingPokemon(pokemonValues));

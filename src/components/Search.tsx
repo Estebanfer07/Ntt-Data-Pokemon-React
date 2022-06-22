@@ -19,8 +19,9 @@ export const Search = () => {
   const searchPokemon = (searchTerm: string) => {
     if (!searchTerm || searchTerm.length == 0) {
       dispatch(startChargingPokemons());
+    } else {
+      dispatch(startSearchingPokemonsByName(searchTerm));
     }
-    dispatch(startSearchingPokemonsByName(searchTerm));
   };
 
   return (

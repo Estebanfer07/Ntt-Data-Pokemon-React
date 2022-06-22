@@ -24,7 +24,7 @@ export const pokemonsInitialState: PokemonsState = {
 };
 
 export const pokemonReducer = createSlice({
-  name: "counter",
+  name: "pokemon",
   initialState: pokemonsInitialState,
   reducers: {
     cargarPokemons: (state) => {

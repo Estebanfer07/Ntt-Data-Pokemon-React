@@ -7,8 +7,8 @@ export interface Pokemon {
   attack: number;
   defense: number;
   idAuthor: number;
-  created_at: Date;
-  updated_at: Date;
+  created_at: Date | string;
+  updated_at: Date | string;
 }
 
 export const pokTypes = ["normal", "poison", "water", "fire", "bug"] as const;
