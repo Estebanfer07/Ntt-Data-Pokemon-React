@@ -1,5 +1,8 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { startChargingPokemons } from "../actions/pokemon";
+import {
+  startChargingPokemons,
+  startDeletingPokemon,
+} from "../actions/pokemon";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { PokemonType, Pokemon, pokTypes } from "../models/pokemon";
 import {
@@ -63,14 +66,7 @@ export const Table = () => {
     const confirmar = window.confirm("seguro que desea eliminar?");
 
     if (confirmar) {
-      //   pokemonService.removePokemon(pokemon.id).subscribe({
-      //     next: (p) => {
-      //       store.dispatch(removePokemon({ id: p.id }));
-      //     },
-      //     error: (_) => alert('Hubo un error al eliminar Pokemon'),
-      //   });
-
-      alert("Pokemon eliminado correctamemte");
+      dispatch(startDeletingPokemon(pokemon.id));
     }
   };
 

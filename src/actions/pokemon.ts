@@ -5,6 +5,7 @@ import {
   cargarPokemonsSuccess,
   changePage,
   editPokemon,
+  removePokemon,
   toggleForm,
 } from "../reducers/pokemonReducer";
 import { AppThunk } from "../store/store";
@@ -62,7 +63,6 @@ export const startEdittingPokemon =
         window.alert("Pokemon editado correctamente");
       }
     } catch (error) {
-      dispatch(cargarPokemonsSuccess([]));
       window.alert("Hubo un problema al editar Pokemon");
     }
   };
@@ -87,7 +87,25 @@ export const startCreatingPokemon =
         window.alert("Pokemon creado correctamente");
       }
     } catch (error) {
-      dispatch(cargarPokemonsSuccess([]));
       window.alert("Hubo un problema al crear Pokemon");
+    }
+  };
+
+export const startDeletingPokemon =
+  (id: number): AppThunk =>
+  async (dispatch, getState) => {
+    try {
+      const resp = await axios.delete<{ success: boolean }>(
+        `${process.env.REACT_APP_BASE_URL}/${id}`
+      );
+
+      if (resp.data.success) {
+        dispatch(removePokemon(id));
+        window.alert("Pokemon eliminado correctamente");
+      } else {
+        window.alert("Hubo un problema al eliminar Pokemon");
+      }
+    } catch (error) {
+      window.alert("Hubo un problema al eliminar Pokemon");
     }
   };
