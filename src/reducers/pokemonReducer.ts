@@ -7,6 +7,7 @@ export interface PokemonsState {
   currPageList: Pokemon[];
   loaded: boolean;
   loading: boolean;
+  openForm: boolean;
   currPokemon: Pokemon | null;
   pokemonsPerPage: number;
 }
@@ -14,11 +15,12 @@ export interface PokemonsState {
 export const pokemonsInitialState: PokemonsState = {
   completePokemons: [],
   filteredPokemons: [],
+  currPageList: [],
   loaded: false,
   loading: false,
+  openForm: false,
   currPokemon: null,
-  currPageList: [],
-  pokemonsPerPage: 2,
+  pokemonsPerPage: 5,
 };
 
 export const pokemonReducer = createSlice({
@@ -37,7 +39,10 @@ export const pokemonReducer = createSlice({
       state.completePokemons = [...pokemons];
       state.filteredPokemons = [...pokemons];
     },
-    setCurrPokemon: (state, { payload: pokemon }: PayloadAction<Pokemon>) => {
+    setCurrPokemon: (
+      state,
+      { payload: pokemon }: PayloadAction<Pokemon | null>
+    ) => {
       state.currPokemon = pokemon;
     },
     removePokemon: (state, { payload: id }: PayloadAction<number>) => {
@@ -72,6 +77,9 @@ export const pokemonReducer = createSlice({
         );
       }
     },
+    toggleForm: (state, { payload: openForm }: PayloadAction<boolean>) => {
+      state.openForm = openForm;
+    },
   },
 });
 
@@ -84,6 +92,7 @@ export const {
   editPokemon,
   changePage,
   filterPokemons,
+  toggleForm,
 } = pokemonReducer.actions;
 
 export default pokemonReducer.reducer;

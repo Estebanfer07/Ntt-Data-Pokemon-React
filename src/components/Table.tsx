@@ -2,7 +2,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { startChargingPokemons } from "../actions/pokemon";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { PokemonType, Pokemon, pokTypes } from "../models/pokemon";
-import { changePage, filterPokemons } from "../reducers/pokemonReducer";
+import {
+  changePage,
+  filterPokemons,
+  setCurrPokemon,
+  toggleForm,
+} from "../reducers/pokemonReducer";
 import { RootState } from "../store/store";
 
 export const Table = () => {
@@ -23,6 +28,11 @@ export const Table = () => {
     dispatch(changePage(1));
     setCurrentPage(1);
   }, [currType, dispatch]);
+
+  useEffect(() => {
+    dispatch(filterPokemons(currType));
+    dispatch(changePage(currentPage));
+  }, [pokemonsState.completePokemons]);
 
   const handleTypeChange = ({ target }: ChangeEvent<HTMLSelectElement>) => {
     setCurrType(target.value as PokemonType);
@@ -45,7 +55,8 @@ export const Table = () => {
   };
 
   const edit = (pokemon: Pokemon) => {
-    // editPokemon.emit(pokemon);
+    dispatch(setCurrPokemon(pokemon));
+    dispatch(toggleForm(true));
   };
 
   const remove = (pokemon: Pokemon) => {

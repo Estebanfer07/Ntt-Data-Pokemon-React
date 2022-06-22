@@ -1,7 +1,7 @@
 export interface Pokemon {
   id: number;
   name: string;
-  image: null | string;
+  image: undefined | string;
   type: PokemonType;
   hp: number;
   attack: number;
@@ -11,5 +11,5 @@ export interface Pokemon {
   updated_at: Date;
 }
 
-export const pokTypes = ['normal', 'poison', 'water', 'fire', 'bug'] as const;
+export const pokTypes = ["normal", "poison", "water", "fire", "bug"] as const;
 export type PokemonType = typeof pokTypes[number];
