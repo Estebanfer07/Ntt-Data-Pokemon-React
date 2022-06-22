@@ -1,18 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Pokemon } from "../models/pokemon";
+import { Pokemon, PokemonType } from "../models/pokemon";
 
 export interface PokemonsState {
-  pokemons: Pokemon[];
+  completePokemons: Pokemon[];
+  filteredPokemons: Pokemon[];
+  currPageList: Pokemon[];
   loaded: boolean;
   loading: boolean;
   currPokemon: Pokemon | null;
+  pokemonsPerPage: number;
 }
 
 export const pokemonsInitialState: PokemonsState = {
-  pokemons: [],
+  completePokemons: [],
+  filteredPokemons: [],
   loaded: false,
   loading: false,
   currPokemon: null,
+  currPageList: [],
+  pokemonsPerPage: 2,
 };
 
 export const pokemonReducer = createSlice({
@@ -28,22 +34,43 @@ export const pokemonReducer = createSlice({
     ) => {
       state.loading = false;
       state.loaded = true;
-      state.pokemons = [...pokemons];
+      state.completePokemons = [...pokemons];
+      state.filteredPokemons = [...pokemons];
     },
     setCurrPokemon: (state, { payload: pokemon }: PayloadAction<Pokemon>) => {
       state.currPokemon = pokemon;
     },
     removePokemon: (state, { payload: id }: PayloadAction<number>) => {
-      state.pokemons = state.pokemons.filter((p) => p.id !== id);
+      state.completePokemons = state.completePokemons.filter(
+        (p) => p.id !== id
+      );
     },
     addPokemon: (state, { payload: pokemon }: PayloadAction<Pokemon>) => {
-      state.pokemons = [...state.pokemons, { ...pokemon }];
+      state.completePokemons = [...state.completePokemons, { ...pokemon }];
     },
     editPokemon: (state, { payload: pokemon }: PayloadAction<Pokemon>) => {
-      state.pokemons = state.pokemons.map((p) => {
+      state.completePokemons = state.completePokemons.map((p) => {
         if (p.id === pokemon.id) return { ...pokemon };
         return { ...p };
       });
+    },
+    changePage: (state, { payload: page }: PayloadAction<number>) => {
+      state.currPageList = state.filteredPokemons.slice(
+        page * state.pokemonsPerPage - state.pokemonsPerPage,
+        state.pokemonsPerPage * page
+      );
+    },
+    filterPokemons: (
+      state,
+      { payload: currType }: PayloadAction<PokemonType | "todos">
+    ) => {
+      if (currType === "todos") {
+        state.filteredPokemons = [...state.completePokemons];
+      } else {
+        state.filteredPokemons = state.completePokemons.filter(
+          (p) => p.type === currType
+        );
+      }
     },
   },
 });
@@ -55,6 +82,8 @@ export const {
   removePokemon,
   addPokemon,
   editPokemon,
+  changePage,
+  filterPokemons,
 } = pokemonReducer.actions;
 
 export default pokemonReducer.reducer;

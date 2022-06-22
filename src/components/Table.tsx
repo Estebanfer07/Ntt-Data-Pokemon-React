@@ -2,20 +2,16 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { startChargingPokemons } from "../actions/pokemon";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
 import { PokemonType, Pokemon, pokTypes } from "../models/pokemon";
+import { changePage, filterPokemons } from "../reducers/pokemonReducer";
 import { RootState } from "../store/store";
 
 export const Table = () => {
   const pokemonTypes = ["todos", ...pokTypes];
-  const pokemonsPerPage = 2;
 
   const dispatch = useAppDispatch();
   const pokemonsState = useAppSelector((state: RootState) => state.pokemons);
 
-  const [loadingPokemons, setLoadingPokemons] = useState(false);
-  const [loadedPokemons, setLoadedPokemons] = useState(false);
   const [currType, setCurrType] = useState<PokemonType | "todos">("todos");
-  const [filteredPokList, setFilteredPokList] = useState<Pokemon[]>([]);
-  const [pageList, setPageList] = useState<Pokemon[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
@@ -23,49 +19,29 @@ export const Table = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    setLoadingPokemons(pokemonsState.loading);
-    setLoadedPokemons(pokemonsState.loaded);
-  }, [pokemonsState]);
-
-  const filterList = () => {
-    if (currType === "todos") {
-      setFilteredPokList([...pokemonsState.pokemons]);
-    } else {
-      setFilteredPokList(
-        pokemonsState.pokemons.filter((p) => p.type === currType)
-      );
-    }
-    goTopPage(1);
-  };
+    dispatch(filterPokemons(currType));
+    dispatch(changePage(1));
+    setCurrentPage(1);
+  }, [currType, dispatch]);
 
   const handleTypeChange = ({ target }: ChangeEvent<HTMLSelectElement>) => {
     setCurrType(target.value as PokemonType);
-    filterList();
   };
 
   const nextPage = () => {
-    if (currentPage * pokemonsPerPage >= filteredPokList.length) return;
+    if (
+      currentPage * pokemonsState.pokemonsPerPage >=
+      pokemonsState.filteredPokemons.length
+    )
+      return;
+    dispatch(changePage(currentPage + 1));
     setCurrentPage(currentPage + 1);
-    getCurrentPageList();
   };
 
   const lastPage = () => {
     if (currentPage === 1) return;
+    dispatch(changePage(currentPage - 1));
     setCurrentPage(currentPage - 1);
-    getCurrentPageList();
-  };
-  const goTopPage = (page: number) => {
-    setCurrentPage(page);
-    getCurrentPageList();
-  };
-
-  const getCurrentPageList = () => {
-    setPageList(
-      filteredPokList.slice(
-        currentPage * pokemonsPerPage - pokemonsPerPage,
-        pokemonsPerPage * currentPage
-      )
-    );
   };
 
   const edit = (pokemon: Pokemon) => {
@@ -89,7 +65,7 @@ export const Table = () => {
 
   return (
     <>
-      {loadingPokemons && <p>loading...</p>}
+      {pokemonsState.loading && <p>loading...</p>}
 
       <div className="table_wrapper">
         <div className="table_options_wrapper">
@@ -114,7 +90,8 @@ export const Table = () => {
             <span>{currentPage}</span>
             <i
               className={`fas fa-angle-right ${
-                currentPage * pokemonsPerPage >= filteredPokList.length
+                currentPage * pokemonsState.pokemonsPerPage >=
+                pokemonsState.filteredPokemons.length
                   ? "disabled"
                   : ""
               }`}
@@ -122,7 +99,7 @@ export const Table = () => {
             ></i>
           </div>
         </div>
-        {loadedPokemons && !loadingPokemons && (
+        {pokemonsState.loaded && !pokemonsState.loading && (
           <table>
             <thead>
               <tr>
@@ -134,7 +111,7 @@ export const Table = () => {
               </tr>
             </thead>
             <tbody>
-              {pageList.map((p) => (
+              {pokemonsState.currPageList.map((p) => (
                 <tr key={p.id}>
                   <td>{p.name || "No hay nombre"}</td>
                   <td>

@@ -2,6 +2,7 @@ import axios from "axios";
 import {
   cargarPokemons,
   cargarPokemonsSuccess,
+  changePage,
 } from "../reducers/pokemonReducer";
 import { AppThunk } from "../store/store";
 import { Pokemon } from "../models/pokemon";
@@ -17,6 +18,7 @@ export const startChargingPokemons =
       );
       const pokemons = resp.data;
       dispatch(cargarPokemonsSuccess(pokemons));
+      dispatch(changePage(1));
     } catch (error) {
       dispatch(cargarPokemonsSuccess([]));
       window.alert("Hubo un problema al cargar Pokemons");
