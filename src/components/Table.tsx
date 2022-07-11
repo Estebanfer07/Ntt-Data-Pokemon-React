@@ -10,6 +10,7 @@ import {
   filterPokemons,
   setCurrPokemon,
   toggleForm,
+  toggleModal,
 } from "../reducers/pokemonReducer";
 import { RootState } from "../store/store";
 
@@ -68,6 +69,12 @@ export const Table = () => {
     if (confirmar) {
       dispatch(startDeletingPokemon(pokemon.id));
     }
+  };
+
+  const openModal = (pokemon: Pokemon) => {
+    dispatch(
+      toggleModal({ openModal: true, name: pokemon.name, img: pokemon.image! })
+    );
   };
 
   return (
@@ -130,6 +137,9 @@ export const Table = () => {
                       }
                       alt={p.name}
                       className="table_image"
+                      onClick={() => {
+                        openModal(p);
+                      }}
                     />
                   </td>
                   <td>{p.attack}</td>

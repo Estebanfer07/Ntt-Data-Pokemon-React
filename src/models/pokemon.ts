@@ -13,3 +13,9 @@ export interface Pokemon {
 
 export const pokTypes = ["normal", "poison", "water", "fire", "bug"] as const;
 export type PokemonType = typeof pokTypes[number];
+
+export interface ModalData {
+  openModal: boolean;
+  img: string;
+  name: string;
+}

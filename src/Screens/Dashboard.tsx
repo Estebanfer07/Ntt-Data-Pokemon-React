@@ -1,4 +1,5 @@
 import { CreateEditForm } from "../components/CreateEditForm";
+import { Modal } from "../components/Modal";
 import { Search } from "../components/Search";
 import { Table } from "../components/Table";
 import { useAppDispatch, useAppSelector } from "../hooks/reduxHooks";
@@ -26,6 +27,7 @@ export const Dashboard = () => {
       </div>
       <Table />
       {pokemonsState.openForm && <CreateEditForm />}
+      {pokemonsState.openModal && <Modal />}
     </div>
   );
 };

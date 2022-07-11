@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Pokemon, PokemonType } from "../models/pokemon";
+import { Pokemon, PokemonType, ModalData } from "../models/pokemon";
 
 export interface PokemonsState {
   completePokemons: Pokemon[];
@@ -10,6 +10,7 @@ export interface PokemonsState {
   openForm: boolean;
   currPokemon: Pokemon | null;
   pokemonsPerPage: number;
+  openModal: boolean;
 }
 
 export const pokemonsInitialState: PokemonsState = {
@@ -21,6 +22,7 @@ export const pokemonsInitialState: PokemonsState = {
   openForm: false,
   currPokemon: null,
   pokemonsPerPage: 5,
+  openModal: false,
 };
 
 export const pokemonReducer = createSlice({
@@ -80,6 +82,13 @@ export const pokemonReducer = createSlice({
     toggleForm: (state, { payload: openForm }: PayloadAction<boolean>) => {
       state.openForm = openForm;
     },
+    toggleModal: (
+      state,
+      { payload: { openModal, img, name } }: PayloadAction<ModalData>
+    ) => {
+      state.openModal = openModal;
+      state.currPokemon = { ...state.currPokemon!, name, image: img };
+    },
   },
 });
 
@@ -93,6 +102,7 @@ export const {
   changePage,
   filterPokemons,
   toggleForm,
+  toggleModal,
 } = pokemonReducer.actions;
 
 export default pokemonReducer.reducer;
